@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: f1-telemetry-db
+    environment:
+      POSTGRES_DB: telemetry
+      POSTGRES_USER: telemetry
+      POSTGRES_PASSWORD: telemetry
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U telemetry -d telemetry"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: f1-telemetry-backend
+    environment:
+      APP_NAME: F1 Telemetry Simulation System
+      DATABASE_URL: postgresql+psycopg2://telemetry:telemetry@db:5432/telemetry
+      CORS_ORIGINS: '["http://localhost:5173"]'
+      LIVE_STALE_SECONDS: "3"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: f1-telemetry-frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api/v1
+    depends_on:
+      - backend
+    ports:
+      - "5173:4173"
+    volumes:
+      - ./frontend:/usr/src/app
+
+volumes:
+  postgres_data:
