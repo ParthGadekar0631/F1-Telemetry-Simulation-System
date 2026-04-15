@@ -34,10 +34,16 @@ class SessionSummary(BaseModel):
     session_id: str
     name: str
     track_name: str
+    circuit_id: str | None = None
     mode: str
     status: str
     total_laps: int
     current_lap: int
+    weather_condition: str | None = None
+    rain_intensity_pct: float | None = None
+    wind_kph: float | None = None
+    ambient_temp_c: float | None = None
+    track_temp_c: float | None = None
     best_lap_ms: int | None = None
     average_lap_ms: float | None = None
     total_alerts: int = 0

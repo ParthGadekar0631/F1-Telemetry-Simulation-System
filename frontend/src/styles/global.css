@@ -84,12 +84,19 @@ body {
 
 a {
   text-decoration: none;
+  color: inherit;
 }
 
 button,
 select,
 input {
   font: inherit;
+  color: var(--text);
+}
+
+option {
+  background: var(--bg-base);
+  color: var(--text);
 }
 
 .dashboard-shell {
@@ -123,6 +130,23 @@ input {
   max-width: 720px;
   color: var(--muted);
   line-height: 1.6;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-soft-border);
+  color: var(--text);
 }
 
 .hero-actions {
@@ -235,7 +259,8 @@ input {
 .summary-grid span,
 .incident-card small,
 .session-card p,
-.session-card span {
+.session-card span,
+.session-card small {
   color: var(--muted);
 }
 
@@ -291,6 +316,24 @@ input {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.session-filter-row {
+  margin-bottom: 14px;
+}
+
+.session-filter-row label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.session-filter-row select {
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--surface-soft-border);
+  border-radius: 14px;
+  padding: 0.7rem 0.9rem;
 }
 
 .chart-controls {
@@ -397,6 +440,7 @@ input {
 .incident-card {
   display: grid;
   gap: 8px;
+  color: var(--text);
 }
 
 .incident-tag {
@@ -435,6 +479,7 @@ input {
   justify-content: space-between;
   align-items: center;
   text-align: left;
+  color: var(--text);
 }
 
 .session-card.active {
@@ -457,6 +502,7 @@ input {
 .comparison-stat strong,
 .sector-row strong {
   font-size: 1.2rem;
+  color: var(--text);
 }
 
 .empty-state {

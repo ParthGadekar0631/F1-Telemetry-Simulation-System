@@ -387,26 +387,31 @@ pytest
 ctest --test-dir simulator/build --output-on-failure
 ```
 
-## Screenshot Placeholders
+## Dashboard Screenshots
 
-Add repository screenshots in `docs/screenshots/`:
+### Main Telemetry Dashboard
 
-- live-dashboard.png
-- replay-view.png
-- comparison-view.png
+Overview of the race engineering workspace with live metrics, telemetry traces, track map, replay controls, and session analysis panels.
 
-Suggested README sections for screenshots:
+![Main telemetry dashboard](docs/screenshots/dashboard.png)
 
-- live telemetry overview
-- replay track map and charts
-- lap delta comparison panel
+### Telemetry Signal Analysis
 
-## Resume-Ready Highlights
+Signal view showing time-series behavior for speed, RPM, throttle, braking, thermal state, and energy or fuel trends across the session.
 
-- Built a full-stack motorsport telemetry platform spanning a C++ simulation engine, FastAPI analytics backend, PostgreSQL storage, and React dashboard.
-- Modeled real-time vehicle state transitions including throttle, braking, RPM, thermal behavior, fuel burn, and ERS usage with configurable tick-rate simulation.
-- Implemented telemetry ingestion, lap/sector analytics, replay workflows, alerting, anomaly detection, and CSV/JSON export for engineering review.
-- Designed the system as a production-style, multi-service architecture with Docker, tests, modular services, and clear extensibility toward multi-car support.
+![Telemetry signal analysis](docs/screenshots/graph.png)
+
+### Alerting and Operational Monitoring
+
+Alert panel highlighting thermal, braking, fuel, or anomaly conditions that require engineering review during a run or replay.
+
+![Alert and anomaly monitoring](docs/screenshots/alert.png)
+
+### Session History and Review
+
+Historical session browser for selecting prior runs, replaying laps, and comparing completed telemetry sessions stored in PostgreSQL.
+
+![Session history and replay review](docs/screenshots/history.png)
 
 ## Future Improvements
 

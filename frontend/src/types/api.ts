@@ -2,10 +2,16 @@ export type SessionSummary = {
   session_id: string;
   name: string;
   track_name: string;
+  circuit_id: string | null;
   mode: string;
   status: string;
   total_laps: number;
   current_lap: number;
+  weather_condition: string | null;
+  rain_intensity_pct: number | null;
+  wind_kph: number | null;
+  ambient_temp_c: number | null;
+  track_temp_c: number | null;
   best_lap_ms: number | null;
   average_lap_ms: number | null;
   total_alerts: number;

@@ -34,6 +34,7 @@ export function DashboardPage() {
     return window.localStorage.getItem("f1-dashboard-theme") === "dark" ? "dark" : "light";
   });
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
+  const [selectedCircuit, setSelectedCircuit] = useState("all");
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<SessionAnalytics | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -193,7 +194,25 @@ export function DashboardPage() {
         : currentLapPoints;
   const trackPoints = replayViewActive ? replayTracePoints : currentLapPoints;
   const lapOptions = analytics?.lap_summaries.map((lap) => lap.lap_number) ?? [1];
+  const circuitOptions = useMemo(
+    () => [...new Set(sessions.map((session) => session.track_name))].sort((left, right) => left.localeCompare(right)),
+    [sessions],
+  );
+  const filteredSessions = useMemo(
+    () => sessions.filter((session) => selectedCircuit === "all" || session.track_name === selectedCircuit),
+    [selectedCircuit, sessions],
+  );
   const selectedSession = sessions.find((session) => session.session_id === selectedSessionId) ?? null;
+
+  useEffect(() => {
+    if (filteredSessions.length === 0) {
+      return;
+    }
+
+    if (!selectedSessionId || !filteredSessions.some((session) => session.session_id === selectedSessionId)) {
+      setSelectedSessionId(filteredSessions[0].session_id);
+    }
+  }, [filteredSessions, selectedSessionId]);
 
   useEffect(() => {
     if (lapOptions.length >= 2) {
@@ -254,6 +273,19 @@ export function DashboardPage() {
             Stream simulated vehicle state, review prior laps, compare sector delta, and surface alert conditions from a
             single-car telemetry pipeline designed to scale to multi-car operation.
           </p>
+          {selectedSession ? (
+            <div className="hero-meta">
+              <span className="hero-badge">{selectedSession.track_name}</span>
+              <span className="hero-badge">{selectedSession.total_laps} laps</span>
+              <span className="hero-badge">{selectedSession.weather_condition ?? "Dry"}</span>
+              <span className="hero-badge">
+                Rain {selectedSession.rain_intensity_pct != null ? `${selectedSession.rain_intensity_pct}%` : "0%"}
+              </span>
+              <span className="hero-badge">
+                Wind {selectedSession.wind_kph != null ? `${selectedSession.wind_kph} kph` : "0 kph"}
+              </span>
+            </div>
+          ) : null}
         </div>
         <div className="hero-side">
           <div className="hero-actions">
@@ -325,7 +357,14 @@ export function DashboardPage() {
       </section>
 
       <section className="session-row">
-        <SessionList sessions={sessions} selectedSessionId={selectedSessionId} onSelect={setSelectedSessionId} />
+        <SessionList
+          sessions={filteredSessions}
+          selectedSessionId={selectedSessionId}
+          selectedCircuit={selectedCircuit}
+          circuitOptions={circuitOptions}
+          onSelectCircuit={setSelectedCircuit}
+          onSelect={setSelectedSessionId}
+        />
         <section className="panel summary-panel">
           <div className="panel-header">
             <div>
