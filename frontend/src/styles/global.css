@@ -17,6 +17,11 @@
   --hero-panel: linear-gradient(135deg, rgba(255, 251, 246, 0.96), rgba(244, 234, 221, 0.92));
   --hero-accent: #d62939;
   --hero-accent-alt: #ff9f1c;
+  --control-bg: rgba(255, 255, 255, 0.82);
+  --control-border: rgba(24, 33, 47, 0.12);
+  --control-text: #18212f;
+  --control-active-bg: #18212f;
+  --control-active-text: #ffffff;
   --track-surface: #f7f0e5;
   --track-grid: rgba(24, 33, 47, 0.08);
   --track-outline: rgba(24, 33, 47, 0.12);
@@ -53,6 +58,11 @@
   --hero-panel: linear-gradient(135deg, rgba(18, 25, 39, 0.98), rgba(8, 11, 18, 0.94));
   --hero-accent: #ff5a66;
   --hero-accent-alt: #f6b74b;
+  --control-bg: rgba(245, 247, 251, 0.96);
+  --control-border: rgba(15, 20, 32, 0.12);
+  --control-text: #11161f;
+  --control-active-bg: rgba(245, 247, 251, 0.96);
+  --control-active-text: #11161f;
   --track-surface: #0d1420;
   --track-grid: rgba(214, 221, 232, 0.08);
   --track-outline: rgba(214, 221, 232, 0.1);
@@ -91,7 +101,7 @@ button,
 select,
 input {
   font: inherit;
-  color: var(--text);
+  color: var(--control-text);
 }
 
 option {
@@ -212,15 +222,16 @@ option {
 }
 
 .primary-button {
-  background: var(--text);
-  color: white;
+  background: var(--control-active-bg);
+  color: var(--control-active-text);
+  border-color: var(--control-border);
   box-shadow: var(--shadow);
 }
 
 .ghost-button {
-  background: var(--surface-soft);
-  color: var(--text);
-  border-color: var(--surface-soft-border);
+  background: var(--control-bg);
+  color: var(--control-text);
+  border-color: var(--control-border);
 }
 
 .metrics-grid {
@@ -329,9 +340,9 @@ option {
 }
 
 .session-filter-row select {
-  background: var(--surface-soft);
-  color: var(--text);
-  border: 1px solid var(--surface-soft-border);
+  background: var(--control-bg);
+  color: var(--control-text);
+  border: 1px solid var(--control-border);
   border-radius: 14px;
   padding: 0.7rem 0.9rem;
 }
@@ -345,13 +356,14 @@ option {
 .signal-chip {
   border-radius: 999px;
   padding: 0.55rem 0.85rem;
-  background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
-  color: var(--text);
+  background: var(--control-bg);
+  color: var(--control-text);
+  border-color: var(--control-border);
 }
 
 .signal-chip.active {
-  background: var(--text);
-  color: white;
+  background: var(--control-active-bg);
+  color: var(--control-active-text);
 }
 
 .chart-wrap {
@@ -407,9 +419,9 @@ option {
 
 .replay-controls select,
 .comparison-pickers select {
-  background: var(--surface-soft);
-  color: var(--text);
-  border: 1px solid var(--surface-soft-border);
+  background: var(--control-bg);
+  color: var(--control-text);
+  border: 1px solid var(--control-border);
   border-radius: 14px;
   padding: 0.7rem 0.9rem;
 }

@@ -26,7 +26,7 @@ export function AlertsPanel({ alerts, anomalies }: AlertsPanelProps) {
               </span>
               <strong>{("message" in item ? item.message : item.description) ?? "Unknown incident"}</strong>
               <small>
-                Lap {item.lap_number ?? "-"} · {item.metric_name} · {item.metric_value.toFixed(1)}
+                Lap {item.lap_number ?? "-"} | {item.metric_name} | {item.metric_value.toFixed(1)}
               </small>
             </article>
           ))}

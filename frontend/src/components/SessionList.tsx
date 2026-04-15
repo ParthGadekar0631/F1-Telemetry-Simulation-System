@@ -5,9 +5,9 @@ import { formatLapTime } from "../utils/formatters";
 type SessionListProps = {
   sessions: SessionSummary[];
   selectedSessionId: string | null;
-  selectedCircuit: string;
-  circuitOptions: string[];
-  onSelectCircuit: (circuit: string) => void;
+  selectedCircuitId: string;
+  circuitOptions: Array<{ id: string; displayName: string }>;
+  onSelectCircuit: (circuitId: string) => void;
   onSelect: (sessionId: string) => void;
 };
 
@@ -15,7 +15,7 @@ type SessionListProps = {
 export function SessionList({
   sessions,
   selectedSessionId,
-  selectedCircuit,
+  selectedCircuitId,
   circuitOptions,
   onSelectCircuit,
   onSelect,
@@ -31,17 +31,18 @@ export function SessionList({
       <div className="session-filter-row">
         <label>
           Circuit
-          <select value={selectedCircuit} onChange={(event) => onSelectCircuit(event.target.value)}>
+          <select value={selectedCircuitId} onChange={(event) => onSelectCircuit(event.target.value)}>
             <option value="all">All circuits</option>
             {circuitOptions.map((circuit) => (
-              <option key={circuit} value={circuit}>
-                {circuit}
+              <option key={circuit.id} value={circuit.id}>
+                {circuit.displayName}
               </option>
             ))}
           </select>
         </label>
       </div>
       <div className="session-list">
+        {sessions.length === 0 ? <p className="empty-state">No stored sessions for the selected circuit yet.</p> : null}
         {sessions.map((session) => (
           <button
             key={session.session_id}
@@ -53,7 +54,7 @@ export function SessionList({
               <strong>{session.name}</strong>
               <p>{session.track_name}</p>
               <small>
-                {session.weather_condition ?? "Dry"} · {session.total_laps} laps · Wind {session.wind_kph ?? 0} kph
+                {session.weather_condition ?? "Dry"} | {session.total_laps} laps | Wind {session.wind_kph ?? 0} kph
               </small>
             </div>
             <div>

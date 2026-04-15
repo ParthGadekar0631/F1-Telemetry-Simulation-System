@@ -12,6 +12,7 @@ export type SessionSummary = {
   wind_kph: number | null;
   ambient_temp_c: number | null;
   track_temp_c: number | null;
+  weather_phenomena: string[];
   best_lap_ms: number | null;
   average_lap_ms: number | null;
   total_alerts: number;

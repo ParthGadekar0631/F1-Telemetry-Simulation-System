@@ -185,6 +185,15 @@ export function getCircuitDefinition(trackName?: string | null): CircuitDefiniti
 }
 
 
-export const current2026CircuitNames = CURRENT_F1_2026_CIRCUITS.filter((circuit) => circuit.id !== "default").map(
-  (circuit) => circuit.displayName,
+export function getCircuitId(trackName?: string | null): string | null {
+  const circuit = getCircuitDefinition(trackName);
+  return circuit.id === "default" ? null : circuit.id;
+}
+
+
+export const current2026Circuits = CURRENT_F1_2026_CIRCUITS.filter((circuit) => circuit.id !== "default").map(
+  (circuit) => ({
+    id: circuit.id,
+    displayName: circuit.displayName,
+  }),
 );

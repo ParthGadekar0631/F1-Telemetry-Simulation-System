@@ -20,6 +20,7 @@ import type {
   SectorComparison,
   TelemetryPoint,
 } from "../types/api";
+import { current2026Circuits, getCircuitId } from "../utils/circuits";
 import { formatLapTime, formatNumber } from "../utils/formatters";
 
 
@@ -34,7 +35,7 @@ export function DashboardPage() {
     return window.localStorage.getItem("f1-dashboard-theme") === "dark" ? "dark" : "light";
   });
   const [sessions, setSessions] = useState<SessionSummary[]>([]);
-  const [selectedCircuit, setSelectedCircuit] = useState("all");
+  const [selectedCircuitId, setSelectedCircuitId] = useState("all");
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [analytics, setAnalytics] = useState<SessionAnalytics | null>(null);
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -194,15 +195,20 @@ export function DashboardPage() {
         : currentLapPoints;
   const trackPoints = replayViewActive ? replayTracePoints : currentLapPoints;
   const lapOptions = analytics?.lap_summaries.map((lap) => lap.lap_number) ?? [1];
-  const circuitOptions = useMemo(
-    () => [...new Set(sessions.map((session) => session.track_name))].sort((left, right) => left.localeCompare(right)),
-    [sessions],
-  );
   const filteredSessions = useMemo(
-    () => sessions.filter((session) => selectedCircuit === "all" || session.track_name === selectedCircuit),
-    [selectedCircuit, sessions],
+    () =>
+      sessions.filter((session) => {
+        if (selectedCircuitId === "all") {
+          return true;
+        }
+
+        const sessionCircuitId = session.circuit_id ?? getCircuitId(session.track_name);
+        return sessionCircuitId === selectedCircuitId;
+      }),
+    [selectedCircuitId, sessions],
   );
   const selectedSession = sessions.find((session) => session.session_id === selectedSessionId) ?? null;
+  const highlightedPhenomena = selectedSession?.weather_phenomena.slice(0, 2) ?? [];
 
   useEffect(() => {
     if (filteredSessions.length === 0) {
@@ -284,6 +290,11 @@ export function DashboardPage() {
               <span className="hero-badge">
                 Wind {selectedSession.wind_kph != null ? `${selectedSession.wind_kph} kph` : "0 kph"}
               </span>
+              {highlightedPhenomena.map((phenomenon) => (
+                <span className="hero-badge" key={phenomenon}>
+                  {phenomenon}
+                </span>
+              ))}
             </div>
           ) : null}
         </div>
@@ -360,9 +371,9 @@ export function DashboardPage() {
         <SessionList
           sessions={filteredSessions}
           selectedSessionId={selectedSessionId}
-          selectedCircuit={selectedCircuit}
-          circuitOptions={circuitOptions}
-          onSelectCircuit={setSelectedCircuit}
+          selectedCircuitId={selectedCircuitId}
+          circuitOptions={current2026Circuits}
+          onSelectCircuit={setSelectedCircuitId}
           onSelect={setSelectedSessionId}
         />
         <section className="panel summary-panel">

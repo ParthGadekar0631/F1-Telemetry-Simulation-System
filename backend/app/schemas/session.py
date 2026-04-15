@@ -44,6 +44,7 @@ class SessionSummary(BaseModel):
     wind_kph: float | None = None
     ambient_temp_c: float | None = None
     track_temp_c: float | None = None
+    weather_phenomena: list[str] = Field(default_factory=list)
     best_lap_ms: int | None = None
     average_lap_ms: float | None = None
     total_alerts: int = 0

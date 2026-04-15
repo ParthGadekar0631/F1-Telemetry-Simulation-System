@@ -57,7 +57,7 @@ function ChartTooltip({ active, payload, label }: TooltipProps<ValueType, NameTy
   const point = payload[0].payload as TelemetryPoint;
   return (
     <div className="chart-tooltip">
-      <strong>{`T+ ${Math.round(Number(label) / 1000)}s · Lap ${point.lap_number}`}</strong>
+      <strong>{`T+ ${Math.round(Number(label) / 1000)}s | Lap ${point.lap_number}`}</strong>
       {payload.map((item) => {
         const signal = String(item.dataKey);
         return (

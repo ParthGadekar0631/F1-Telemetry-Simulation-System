@@ -97,6 +97,7 @@ def list_sessions(db: Session = Depends(get_db)) -> list[SessionSummary]:
                 wind_kph=session.configuration.get("weather", {}).get("wind_kph"),
                 ambient_temp_c=session.configuration.get("weather", {}).get("ambient_temp_c"),
                 track_temp_c=session.configuration.get("weather", {}).get("track_temp_c"),
+                weather_phenomena=session.configuration.get("weather", {}).get("phenomena", []),
                 best_lap_ms=best_lap,
                 average_lap_ms=float(average_lap) if average_lap is not None else None,
                 total_alerts=total_alerts,
