@@ -25,8 +25,10 @@ export const api = {
   getSessions: () => getJson<SessionSummary[]>("/sessions"),
   getLiveTelemetry: (sessionId: string) => getJson<LiveTelemetryResponse>(`/telemetry/live?session_id=${sessionId}`),
   getLatestTelemetry: (sessionId: string) => getJson<TelemetryPoint>(`/telemetry/latest/${sessionId}`),
-  getLapHistory: (sessionId: string, lapNumber: number) =>
-    getJson<TelemetryPoint[]>(`/telemetry/history/${sessionId}?lap_number=${lapNumber}`),
+  getLapHistory: (sessionId: string, lapNumber?: number) =>
+    getJson<TelemetryPoint[]>(
+      `/telemetry/history/${sessionId}${lapNumber != null ? `?lap_number=${lapNumber}` : ""}`,
+    ),
   getSessionAnalytics: (sessionId: string) =>
     getJson<SessionAnalytics>(`/analytics/sessions/${sessionId}/summary`),
   compareLaps: (sessionId: string, lapA: number, lapB: number) =>

@@ -1,7 +1,12 @@
 :root {
-  --bg: #f1eadf;
+  color-scheme: light;
+  --bg-base: #f7f1e8;
+  --bg-alt: #efe5d6;
+  --grid-line: rgba(24, 33, 47, 0.03);
   --panel: rgba(255, 250, 242, 0.92);
   --panel-border: rgba(24, 33, 47, 0.08);
+  --surface-soft: rgba(255, 255, 255, 0.72);
+  --surface-soft-border: rgba(24, 33, 47, 0.08);
   --text: #18212f;
   --muted: #6c7077;
   --accent: #d62939;
@@ -9,12 +14,57 @@
   --gold: #ff9f1c;
   --green: #1d6f42;
   --shadow: 0 18px 45px rgba(24, 33, 47, 0.12);
+  --hero-panel: linear-gradient(135deg, rgba(255, 251, 246, 0.96), rgba(244, 234, 221, 0.92));
+  --hero-accent: #d62939;
+  --hero-accent-alt: #ff9f1c;
+  --track-surface: #f7f0e5;
+  --track-grid: rgba(24, 33, 47, 0.08);
+  --track-outline: rgba(24, 33, 47, 0.12);
+  --track-grad-start: #d62939;
+  --track-grad-end: #18212f;
+  --track-trail: #ff9f1c;
+  --track-sector-fill: rgba(255, 255, 255, 0.92);
+  --track-sector-stroke: rgba(24, 33, 47, 0.15);
+  --track-line: #121a28;
+  --car-fill: #121a28;
+  --car-accent: #ff9f1c;
+  --car-glow: #d62939;
   font-family: "Bahnschrift", "Aptos", "Trebuchet MS", sans-serif;
   color: var(--text);
   background:
     radial-gradient(circle at top right, rgba(214, 41, 57, 0.16), transparent 32%),
     radial-gradient(circle at 15% 20%, rgba(255, 159, 28, 0.17), transparent 28%),
-    linear-gradient(180deg, #f7f1e8 0%, #efe5d6 100%);
+    linear-gradient(180deg, var(--bg-base) 0%, var(--bg-alt) 100%);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg-base: #080b12;
+  --bg-alt: #101723;
+  --grid-line: rgba(214, 221, 232, 0.05);
+  --panel: rgba(16, 23, 35, 0.82);
+  --panel-border: rgba(214, 221, 232, 0.12);
+  --surface-soft: rgba(19, 26, 39, 0.88);
+  --surface-soft-border: rgba(214, 221, 232, 0.09);
+  --text: #f2f5fb;
+  --muted: #99a5b7;
+  --accent-soft: rgba(214, 41, 57, 0.22);
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  --hero-panel: linear-gradient(135deg, rgba(18, 25, 39, 0.98), rgba(8, 11, 18, 0.94));
+  --hero-accent: #ff5a66;
+  --hero-accent-alt: #f6b74b;
+  --track-surface: #0d1420;
+  --track-grid: rgba(214, 221, 232, 0.08);
+  --track-outline: rgba(214, 221, 232, 0.1);
+  --track-grad-start: #ff5a66;
+  --track-grad-end: #7ea6ff;
+  --track-trail: #f6b74b;
+  --track-sector-fill: rgba(15, 20, 32, 0.92);
+  --track-sector-stroke: rgba(214, 221, 232, 0.18);
+  --track-line: #f3f6fc;
+  --car-fill: #f3f6fc;
+  --car-accent: #f6b74b;
+  --car-glow: #ff5a66;
 }
 
 * {
@@ -25,9 +75,11 @@ body {
   margin: 0;
   min-height: 100vh;
   background-image:
-    linear-gradient(rgba(24, 33, 47, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 33, 47, 0.03) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 22px 22px;
+  color: var(--text);
+  transition: background-color 180ms ease, color 180ms ease;
 }
 
 a {
@@ -50,8 +102,13 @@ input {
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  align-items: end;
+  align-items: stretch;
   margin-bottom: 28px;
+}
+
+.hero-copy-block {
+  display: grid;
+  align-content: end;
 }
 
 .hero h1 {
@@ -72,6 +129,34 @@ input {
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+.hero-side {
+  display: grid;
+  gap: 16px;
+  justify-items: end;
+}
+
+.hero-visual {
+  width: min(100%, 520px);
+}
+
+.hero-visual-svg {
+  width: 100%;
+  display: block;
+}
+
+.hero-visual-copy {
+  fill: var(--muted);
+  letter-spacing: 0.22em;
+  font-size: 14px;
+}
+
+.track-subtitle {
+  color: var(--muted);
+  display: inline-block;
+  margin-top: 6px;
 }
 
 .eyebrow {
@@ -109,9 +194,9 @@ input {
 }
 
 .ghost-button {
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--surface-soft);
   color: var(--text);
-  border-color: rgba(24, 33, 47, 0.1);
+  border-color: var(--surface-soft-border);
 }
 
 .metrics-grid {
@@ -217,7 +302,7 @@ input {
 .signal-chip {
   border-radius: 999px;
   padding: 0.55rem 0.85rem;
-  background: rgba(24, 33, 47, 0.05);
+  background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
   color: var(--text);
 }
 
@@ -236,8 +321,8 @@ input {
   gap: 8px;
   padding: 12px 14px;
   border-radius: 16px;
-  background: rgba(255, 250, 242, 0.96);
-  border: 1px solid rgba(24, 33, 47, 0.08);
+  background: color-mix(in srgb, var(--panel) 96%, transparent);
+  border: 1px solid var(--panel-border);
   box-shadow: 0 12px 28px rgba(24, 33, 47, 0.14);
 }
 
@@ -249,7 +334,19 @@ input {
 
 .track-map {
   width: 100%;
-  min-height: 310px;
+  min-height: 360px;
+}
+
+.track-sector-label {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.track-empty-label {
+  fill: var(--muted);
+  font-size: 18px;
+  letter-spacing: 0.08em;
 }
 
 .replay-controls,
@@ -267,8 +364,9 @@ input {
 
 .replay-controls select,
 .comparison-pickers select {
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(24, 33, 47, 0.1);
+  background: var(--surface-soft);
+  color: var(--text);
+  border: 1px solid var(--surface-soft-border);
   border-radius: 14px;
   padding: 0.7rem 0.9rem;
 }
@@ -291,8 +389,8 @@ input {
 .summary-grid article,
 .sector-row {
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(24, 33, 47, 0.08);
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-soft-border);
   padding: 14px 16px;
 }
 
@@ -310,7 +408,7 @@ input {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: rgba(24, 33, 47, 0.08);
+  background: color-mix(in srgb, var(--surface-soft) 80%, transparent);
 }
 
 .incident-tag.critical {
@@ -331,8 +429,8 @@ input {
 .session-card {
   border-radius: 20px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(24, 33, 47, 0.08);
+  background: var(--surface-soft);
+  border: 1px solid var(--surface-soft-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -377,6 +475,11 @@ input {
   .hero {
     flex-direction: column;
     align-items: start;
+  }
+
+  .hero-side {
+    justify-items: stretch;
+    width: 100%;
   }
 
   .chart-controls {

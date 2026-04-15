@@ -26,6 +26,7 @@ const SIGNALS: Record<string, { label: string; color: string; unit: string }> = 
 };
 
 export type ChartScaleMode = "relative" | "raw";
+export type ChartScopeMode = "lap" | "all";
 
 type SignalChartProps = {
   points: TelemetryPoint[];
@@ -33,6 +34,8 @@ type SignalChartProps = {
   onToggleSignal: (signal: string) => void;
   scaleMode: ChartScaleMode;
   onScaleModeChange: (mode: ChartScaleMode) => void;
+  scopeMode: ChartScopeMode;
+  onScopeModeChange: (mode: ChartScopeMode) => void;
 };
 
 
@@ -54,7 +57,7 @@ function ChartTooltip({ active, payload, label }: TooltipProps<ValueType, NameTy
   const point = payload[0].payload as TelemetryPoint;
   return (
     <div className="chart-tooltip">
-      <strong>{`T+ ${Math.round(Number(label) / 1000)}s`}</strong>
+      <strong>{`T+ ${Math.round(Number(label) / 1000)}s · Lap ${point.lap_number}`}</strong>
       {payload.map((item) => {
         const signal = String(item.dataKey);
         return (
@@ -74,9 +77,16 @@ export function SignalChart({
   onToggleSignal,
   scaleMode,
   onScaleModeChange,
+  scopeMode,
+  onScopeModeChange,
 }: SignalChartProps) {
+  const firstTimestamp = points.length > 0 ? new Date(points[0].timestamp).getTime() : 0;
   const chartData = points.map((point) => {
-    const nextPoint: Record<string, number | string> = { ...point };
+    const nextPoint: Record<string, number | string> = {
+      ...point,
+      chart_time_ms:
+        scopeMode === "all" ? new Date(point.timestamp).getTime() - firstTimestamp : point.lap_time_ms,
+    };
     for (const signal of selectedSignals) {
       const values = points.map((entry) => Number(entry[signal as keyof TelemetryPoint]));
       const min = Math.min(...values);
@@ -96,6 +106,22 @@ export function SignalChart({
           <h3>Telemetry Trace</h3>
         </div>
         <div className="chart-controls">
+          <div className="signal-toggle-group">
+            <button
+              type="button"
+              className={`signal-chip ${scopeMode === "lap" ? "active" : ""}`}
+              onClick={() => onScopeModeChange("lap")}
+            >
+              Selected Lap
+            </button>
+            <button
+              type="button"
+              className={`signal-chip ${scopeMode === "all" ? "active" : ""}`}
+              onClick={() => onScopeModeChange("all")}
+            >
+              All Laps
+            </button>
+          </div>
           <div className="signal-toggle-group">
             <button
               type="button"
@@ -130,7 +156,11 @@ export function SignalChart({
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={chartData}>
             <CartesianGrid strokeDasharray="2 6" stroke="#d9d4cc" />
-            <XAxis dataKey="lap_time_ms" stroke="#555" tickFormatter={(value) => `${Math.round(value / 1000)}s`} />
+            <XAxis
+              dataKey="chart_time_ms"
+              stroke="#555"
+              tickFormatter={(value) => `${Math.round(Number(value) / 1000)}s`}
+            />
             <YAxis
               stroke="#555"
               domain={scaleMode === "relative" ? [0, 100] : ["auto", "auto"]}
