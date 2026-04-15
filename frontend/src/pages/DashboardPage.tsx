@@ -5,7 +5,7 @@ import { LapComparisonCard } from "../components/LapComparisonCard";
 import { MetricCard } from "../components/MetricCard";
 import { ReplayControls } from "../components/ReplayControls";
 import { SessionList } from "../components/SessionList";
-import { SignalChart } from "../components/SignalChart";
+import { SignalChart, type ChartScaleMode } from "../components/SignalChart";
 import { TrackMap } from "../components/TrackMap";
 import { usePolling } from "../hooks/usePolling";
 import { api } from "../services/api";
@@ -39,6 +39,7 @@ export function DashboardPage() {
   const [replayIndex, setReplayIndex] = useState(0);
   const [replayPlaying, setReplayPlaying] = useState(false);
   const [selectedSignals, setSelectedSignals] = useState<string[]>(DEFAULT_SIGNALS);
+  const [chartScaleMode, setChartScaleMode] = useState<ChartScaleMode>("relative");
   const [lapA, setLapA] = useState(1);
   const [lapB, setLapB] = useState(2);
   const [comparison, setComparison] = useState<LapComparison | null>(null);
@@ -79,10 +80,16 @@ export function DashboardPage() {
         setReplayMetadata(nextReplayMetadata);
       });
 
-      if (live.latest) {
-        const history = await api.getLapHistory(selectedSessionId, live.latest.lap_number);
+      const targetLapNumber =
+        live.is_live && live.latest
+          ? live.latest.lap_number
+          : nextAnalytics.best_lap_number ?? nextAnalytics.lap_summaries.at(-1)?.lap_number ?? live.latest?.lap_number;
+
+      if (targetLapNumber) {
+        const history = await api.getLapHistory(selectedSessionId, targetLapNumber);
         startTransition(() => {
           setCurrentLapPoints(history);
+          setLivePoint(history.at(-1) ?? live.latest);
         });
       }
     },
@@ -149,8 +156,10 @@ export function DashboardPage() {
     return () => window.clearInterval(timer);
   }, [replayPlaying, replayPoints, replaySpeed]);
 
-  const displayedPoint = replayPoints[replayIndex] ?? livePoint;
-  const chartPoints = replayPoints.length > 0 ? deferredReplayPoints : currentLapPoints;
+  const replayViewActive = replayPlaying || replayIndex > 0;
+  const displayedPoint = replayViewActive ? replayPoints[replayIndex] ?? livePoint : livePoint;
+  const chartPoints = replayViewActive ? deferredReplayPoints : currentLapPoints;
+  const trackPoints = replayViewActive ? replayPoints : currentLapPoints;
   const lapOptions = analytics?.lap_summaries.map((lap) => lap.lap_number) ?? [1];
 
   useEffect(() => {
@@ -233,7 +242,13 @@ export function DashboardPage() {
 
       <section className="dashboard-grid">
         <div className="primary-column">
-          <SignalChart points={chartPoints} selectedSignals={selectedSignals} onToggleSignal={toggleSignal} />
+          <SignalChart
+            points={chartPoints}
+            selectedSignals={selectedSignals}
+            onToggleSignal={toggleSignal}
+            scaleMode={chartScaleMode}
+            onScaleModeChange={setChartScaleMode}
+          />
           <LapComparisonCard
             comparison={comparison}
             sectors={sectorComparison}
@@ -245,7 +260,7 @@ export function DashboardPage() {
           />
         </div>
         <div className="secondary-column">
-          <TrackMap points={replayPoints.length > 0 ? replayPoints : currentLapPoints} activePoint={displayedPoint} />
+          <TrackMap points={trackPoints} activePoint={displayedPoint} />
           <ReplayControls
             lapOptions={replayMetadata?.available_laps ?? [1]}
             selectedLap={replayLap}

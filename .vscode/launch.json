@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Open Frontend",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "start",
+        "http://localhost:5173"
+      ]
+    },
+    {
+      "name": "Open Backend Docs",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "cmd",
+      "runtimeArgs": [
+        "/c",
+        "start",
+        "http://localhost:8000/docs"
+      ]
+    }
+  ]
+}
